@@ -50,6 +50,15 @@ test('getPubKey()', async () => {
   }
 })
 
+/*test.only('showPubKey()', async () => {
+  const response = await app.showPubKey(PATH)
+  expect(response.returnCode).toBe(LedgerError.NoErrors)
+  let j = 0;
+  for (let i = 0; i < PUBLIC_KEY.length; i += 2) {
+    expect(response.publicKey[j++]).toBe(parseInt(PUBLIC_KEY[i]+PUBLIC_KEY[i+1], 16))
+  }
+})*/
+
 test('signFelt(63 digits)', async () => {
   const result = await app.signFelt(PATH, HASH_63, false);
   expect(result.returnCode).toBe(LedgerError.NoErrors)

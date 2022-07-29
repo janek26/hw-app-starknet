@@ -70,11 +70,20 @@ function fixHash(hash: string) {
   return fixed_hash + "0";
 }
 
-function hexToBytes(hex: string) {
+function hexToBytes(str: string) {
   const bytes: number[] = [];
+  let hex = str.replace(/^0x/, ""); 
   for (let c = 0; c < hex.length; c += 2)
     bytes.push(parseInt(hex.substring(c, c + 2), 16));
   return Uint8Array.from(bytes);
+}
+
+function encode(field: string): Uint8Array {
+  const charCodeArr = new Array();
+  for (let c = 0; c < field.length; c++){
+    charCodeArr.push(field.charCodeAt(c));
+  }
+  return Uint8Array.from(charCodeArr);
 }
 
 /**
@@ -356,5 +365,29 @@ export default class Stark {
         return result;
       }, processErrorResponse);
     }, processErrorResponse);
+  }
+
+  async signClear(path: string, tx: string[]) {
+    
+    let serialized_path = serializePath(path);
+    let result;
+
+    const chunks: Uint8Array[] = [];
+
+    chunks.push(serialized_path);
+
+    for (let i = 0; i < tx.length; i++) {
+      chunks.push(encode(tx[i]));
+    }
+      
+    console.log("nb of chunks:" + chunks.length);
+
+    /* first chunk is serialized_path */
+    let response = await this.signSendChunk(1, chunks.length, chunks[0], INS.SIGN_CLEAR);
+    /* send all remaining chunks */ 
+    for (let c = 1; c < chunks.length; c++) {
+      result = await this.signSendChunk(1 + c, chunks.length, chunks[c], INS.SIGN_CLEAR);
+    }
+    return result;
   }
 }

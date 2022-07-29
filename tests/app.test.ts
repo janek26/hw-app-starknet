@@ -76,3 +76,14 @@ test('signFelt(61 digits)', async () => {
   const kp = ec.getKeyPairFromPublicKey("0x" + PUBLIC_KEY);
   expect(ec.verify(kp, HASH_61, [r.toString(), s.toString()])).toBe(true);
 })
+
+test.only('signClear CallData', async () => {
+  let tx = [ 
+    "0x04518b9ba35aeebd1cdaaee614ef231567e3bb6e0b5a030f8d0e12202bd8dac4", /* TARGET CONTRACT */
+    "set_number", /* ENTRY_POINT_SELECTOR "set_number" */
+    "666", /* CALLDATA "666" */
+  ];
+  const result = await app.signClear(PATH, tx);
+  expect(result.returnCode).toBe(LedgerError.NoErrors)
+  console.log(result);
+})

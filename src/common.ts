@@ -11,6 +11,7 @@ export const INS = {
   GET_ADDR: 0x01,
   SIGN: 0x02,
   SIGN_FELT: 0x20,
+  SIGN_CLEAR: 0x40,
 };
 
 export const PAYLOAD_TYPE = {
